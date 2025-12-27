@@ -4,7 +4,7 @@ A recoil control system with a web-based interface for managing and creating rec
 
 ## Credits
 
-- **SleepyTotem Makcu Lib* - https://pypi.org/project/makcu/
+- **SleepyTotem Makcu Lib** - https://pypi.org/project/makcu/
 
 
 ## Features
