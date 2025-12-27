@@ -1,0 +1,7 @@
+{
+    "script_name": "Default Control Script",
+    "script_steps": [
+        {"x": 0, "y": 10}
+    ],
+    "script_delay": 100
+}

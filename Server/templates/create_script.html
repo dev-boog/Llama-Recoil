@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llama-Universal</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../static/create_script.css">
+    <link rel="stylesheet" href="../static/global.css">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons (optional, for nav items) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="sidebar d-md-block">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4 mt-4">
+                        <h3 class="title mb-0">LLama Recoil</h3>
+                        <p class="title-description">v1.0.0</p>
+                    </div>
+
+                    <p class="nav-description mb-0">Home</p>
+                    <a href="{{ url_for('index.index') }}" class="btn nav-button w-100 mt-1"><i class="bi bi-house-door-fill"></i> Dashboard</a>
+
+                    <p class="nav-description mt-3 mb-0">Recoil</p>
+                    <a href="{{ url_for('create_script.create_script') }}" class="btn nav-button-active w-100 mt-1"><i class="bi bi-pencil-fill"></i> Create Script</a>
+                    <a href="{{ url_for('run_script.run_script') }}" class="btn nav-button w-100 mt-1"><i class="bi bi-safe-fill"></i> Scripts</a>
+                    
+                    <p class="nav-description mt-3 mb-0">Misc</p>
+                    <a href="{{ url_for('settings.settings') }}" class="btn nav-button w-100 mt-1"><i class="bi bi-gear-fill"></i> Settings</a>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col ms-auto p-4 text-white">
+                <h1>Create Script</h1>
+                <p>Create your own scripts.</p>
+                <hr>
+                
+                <!-- Create New Script -->
+                <section class="mt-3">
+                    <div class="container">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="flex-fill" style="min-width: 300px;">
+                                <div class="content-container p-3">
+                                    <h5 class="mb-3"><i class="bi bi-plug-fill"></i> Create New Script</h5>
+                                    <hr>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Script Name:</span>
+                                        <input type="text" class="form-control console-cmd-input" id="script-name-input" placeholder="My Script">
+                                        <button onclick="createScript()" class="btn custom-btn w-100 mt-2" id="create-script-name-input">Create</button>                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Saved Scripts -->
+                <section class="mt-3">
+                    <div class="container">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="flex-fill" style="min-width: 300px;">
+                                <div class="content-container p-3">
+                                    <h5 class="mb-3"><i class="bi bi-plug-fill"></i> Saved Scripts</h5>
+                                    <hr>
+                                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                                        {% for script in saved_scripts %}
+                                            <div class="saved-script-widget" onclick="loadScript('{{ script.name }}')">
+                                                <h5>{{ script.name }}</h5>
+                                                <p class="mb-0">Steps: {{ script.step_count }}</p>
+                                                <p class="mb-1">Delay: {{ script.delay }}ms</p>
+                                                <button class="btn custom-btn w-100">Edit</button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Edit Script -->
+                <section class="mt-3" id="edit-section" style="display: none;">
+                    <div class="container">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="flex-fill" style="min-width: 300px;">
+                                <div class="content-container p-3">
+                                    <h5 class="mb-3"><i class="bi bi-plug-fill"></i> Edit Script: <span id="edit-script-name"></span></h5>
+                                    <hr>
+                                    
+                                    <!-- Script Delay -->
+                                    <div class="mb-3">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Delay (ms):</span>
+                                            <input type="number" class="form-control" id="edit-script-delay" placeholder="100" onchange="updateTestPattern()" oninput="updateTestPattern()">
+                                        </div>
+                                    </div>
+
+                                    <!-- Script Steps -->
+                                    <h6 class="mb-2">Steps:</h6>
+                                    <div id="steps-container" class="mb-3"></div>
+
+                                    <!-- Add Step Button -->
+                                    <button onclick="addStep()" class="btn custom-btn w-100 mb-2">Add Step</button>
+
+                                    <!-- Test Toggles -->
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input custom-checkbox" type="checkbox" id="test-enable-toggle" onchange="toggleTestEnable()">
+                                        <label class="form-check-label">Enable</label>
+                                    </div>
+                                    <div class="form-check mt-2 mb-3">
+                                        <input class="form-check-input custom-checkbox" type="checkbox" id="test-hipfire-toggle" onchange="toggleTestHipfire()">
+                                        <label class="form-check-label">Hipfire (LMB only)</label>
+                                    </div>
+
+                                    <!-- Save and Cancel Buttons -->
+                                    <div class="d-flex gap-2">
+                                        <button onclick="saveScript()" class="btn custom-btn flex-fill">Save</button>
+                                        <button onclick="deleteScript()" class="btn custom-btn flex-fill" style="background-color: #dc3545 !important; border-color: #dc3545 !important;">Delete</button>
+                                        <button onclick="cancelEdit()" class="btn custom-btn flex-fill" style="background-color: #6c757d !important; border-color: #6c757d !important;">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/create_script.js"></script>
+</body>
+</html>
