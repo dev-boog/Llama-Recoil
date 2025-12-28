@@ -2,6 +2,11 @@
 
 A recoil control system with a web-based interface for managing and creating recoil patterns. Uses the Makcu library for mouse control.
 
+## Credits
+
+- **SleepyTotem Makcu Lib** - https://pypi.org/project/makcu/
+
+
 ## Features
 
 - **Web Interface** - Control everything from your browser (accessible from any device on your network)
