@@ -1,6 +1,7 @@
 import time
 from Makcu.makcu import Makcu
 
+
 class Recoil:
     enabled = False
     shot_count = 0
@@ -46,11 +47,10 @@ class Recoil:
         
         if button_check and Recoil.enabled:
             if Recoil.mode == "simple-mode":
-                Makcu.move_mouse_smoothly(Recoil.simple_mode_x, Recoil.simple_mode_y, duration=Recoil.simple_mode_delay)
-                time.sleep(Recoil.simple_mode_delay)
+                Makcu.move_mouse_smoothly(Recoil.simple_mode_x, Recoil.simple_mode_y)
+                Makcu.precise_sleep(Recoil.simple_mode_delay)
                 Recoil.shot_count += 1
             elif Recoil.mode == "advanced-mode":
-                # Use test mode pattern if active, otherwise load from config
                 if Recoil.test_mode_active and Recoil.test_mode_steps:
                     step_count = len(Recoil.test_mode_steps)
                     if Recoil.shot_count >= step_count:
@@ -61,8 +61,8 @@ class Recoil:
                     x = step.get("x", 0)
                     y = step.get("y", 0)
                     delay = Recoil.test_mode_delay / 1000.0
-                    Makcu.move_mouse_smoothly(x, y, duration=delay)
-                    time.sleep(delay)
+                    Makcu.move_mouse_smoothly(x, y)
+                    Makcu.precise_sleep(delay)
                     Recoil.shot_count += 1
                 else:
                     from Config.config import Config
@@ -80,8 +80,8 @@ class Recoil:
                             x = step.get("x", 0)
                             y = step.get("y", 0)
                             delay = loaded_script.get("delay", 100) / 1000.0
-                            Makcu.move_mouse_smoothly(x, y, duration=delay)
-                            time.sleep(delay)
+                            Makcu.move_mouse_smoothly(x, y)
+                            Makcu.precise_sleep(delay)
                             Recoil.shot_count += 1
         else:
             # Reset shot count when buttons are released
